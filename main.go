@@ -29,7 +29,7 @@ func main() {
 
 	// get current time
 	area, _ := pterm.DefaultArea.WithCenter().Start()
-	clock, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("03:04:05PM"))).Srender()
+	clock, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("03:04PM"))).Srender()
 	area.Update(clock)
 
 	paddedBox := pterm.DefaultBox.WithLeftPadding(4).WithRightPadding(4).WithTopPadding(1).WithBottomPadding(1)
@@ -58,18 +58,18 @@ type WeatherRes struct {
 func getWeather() (WeatherRes, error) {
 	resp, err := http.Get(WeatherAPI)
 	if err != nil {
-		return WeatherRes{}, fmt.Errorf("Error getting weather: %v", err)
+		return WeatherRes{}, fmt.Errorf("error getting weather: %v", err)
 	}
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return WeatherRes{}, fmt.Errorf("Error getting weather: %v", err)
+		return WeatherRes{}, fmt.Errorf("error getting weather: %v", err)
 	}
 	defer resp.Body.Close()
 
 	weather := WeatherRes{}
 	err = json.Unmarshal(body, &weather)
 	if err != nil {
-		return WeatherRes{}, fmt.Errorf("Error getting weather: %v", err)
+		return WeatherRes{}, fmt.Errorf("error getting weather: %v", err)
 	}
 
 	return weather, nil
