@@ -1,44 +1,52 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
+	"log"
 	"time"
 
+	"github.com/jcfullmer/terminalDashboard/config"
 	"github.com/pterm/pterm"
 	"github.com/pterm/pterm/putils"
 )
 
-const WeatherAPI = "https://api.open-meteo.com/v1/forecast?latitude=41.9573&longitude=-76.518&current=temperature_2m,precipitation&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch"
-
 func main() {
-	spinner, err := pterm.DefaultSpinner.Start("Gathering weather")
+	conf, err := config.GetConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+	WeatherText := fmt.Sprintf("Getting Weather for %s", conf.LocationName)
+
+	spinner, err := pterm.DefaultSpinner.Start(WeatherText)
 	if err != nil {
 		fmt.Printf("Error making spinner: %v", err)
 	}
-	weather, err := getWeather()
+	weather, err := getWeather(conf)
 	if err != nil {
 		fmt.Printf("Error getting weather: %v", err)
 	}
-	time.Sleep(time.Second * 3)
-	spinner.Success()
-	spinner.Info()
+
+	// spinner.Success()
 	spinner.UpdateText("Getting system Info")
+	serviceStatus, err := getServices(conf)
+	if err != nil {
+		fmt.Printf("Error getting serviceStatus: %v", err)
+	}
 
 	// get current time
 	area, _ := pterm.DefaultArea.WithCenter().Start()
 	clock, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("03:04PM"))).Srender()
 	area.Update(clock)
 
-	paddedBox := pterm.DefaultBox.WithLeftPadding(4).WithRightPadding(4).WithTopPadding(1).WithBottomPadding(1)
+	paddedBox := pterm.DefaultBox.WithLeftPadding(2).WithRightPadding(2).WithTopPadding(1) //.WithBottomPadding(0)
 	title := pterm.LightRed("Weather")
 
 	box1 := paddedBox.WithTitle(title).Sprint("Current Weather\n", weather.Current.Temperature2M, weather.CurrentUnits.Temperature2M)
+	box2 := paddedBox.WithTitle(pterm.Green("Service Status")).Sprint("Service Status\n", serviceStatus)
 
 	pterm.DefaultPanel.WithPanels([][]pterm.Panel{
 		{{box1}},
+		{{box2}},
 	}).Render()
 }
 
@@ -53,24 +61,4 @@ type WeatherRes struct {
 		Temperature2M float64 `json:"temperature_2m"`
 		Precipitation float64 `json:"precipitation"`
 	} `json:"current"`
-}
-
-func getWeather() (WeatherRes, error) {
-	resp, err := http.Get(WeatherAPI)
-	if err != nil {
-		return WeatherRes{}, fmt.Errorf("error getting weather: %v", err)
-	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return WeatherRes{}, fmt.Errorf("error getting weather: %v", err)
-	}
-	defer resp.Body.Close()
-
-	weather := WeatherRes{}
-	err = json.Unmarshal(body, &weather)
-	if err != nil {
-		return WeatherRes{}, fmt.Errorf("error getting weather: %v", err)
-	}
-
-	return weather, nil
 }
