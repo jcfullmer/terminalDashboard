@@ -45,8 +45,7 @@ func main() {
 	box2 := paddedBox.WithTitle(pterm.Green("Service Status")).Sprint("Service Status\n", serviceStatus)
 
 	pterm.DefaultPanel.WithPanels([][]pterm.Panel{
-		{{box1}},
-		{{box2}},
+		{{box1}, {box2}},
 	}).Render()
 }
 
