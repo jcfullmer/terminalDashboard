@@ -44,7 +44,7 @@ func main() {
 	weatherTitle := pterm.LightRed("Weather")
 
 	var Panels []pterm.Panel
-	box1 := paddedBox.WithTitle(weatherTitle).Sprint("Current Weather\n", weather.Current.Temperature2M, weather.CurrentUnits.Temperature2M)
+	box1 := paddedBox.WithTitle(weatherTitle).Sprintf("%s: %v %s", conf.LocationName, weather.Current.Temperature2M, weather.CurrentUnits.Temperature2M)
 	Panels = append(Panels, pterm.Panel{box1})
 	box2 := paddedBox.WithTitle(pterm.Green("Service Status")).Sprint(serviceStatus)
 	Panels = append(Panels, pterm.Panel{box2})

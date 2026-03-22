@@ -48,18 +48,21 @@ func GetWeather(conf *config.Config) (WeatherRes, error) {
 
 func GetServices(conf *config.Config) (string, error) {
 	var Status string
-	for _, service := range conf.Services {
+	for i, service := range conf.Services {
 		cmd := exec.Command("systemctl", "is-active", service)
 		err := cmd.Run()
 		if err != nil {
 			// Check the exit code for non-zero status
 			if exitErr, ok := err.(*exec.ExitError); ok {
-				Status += fmt.Sprintf("%s: %s\n", service, exitErr)
+				Status += fmt.Sprintf("%s: %s", service, exitErr)
 			} else {
 				fmt.Printf("Error running command: %v\n", err)
 			}
 		} else {
-			Status += fmt.Sprintf("%s is active\n", service)
+			Status += fmt.Sprintf("%s is active", service)
+		}
+		if i+1 != len(conf.Services) {
+			Status += "\n"
 		}
 	}
 	return Status, nil
