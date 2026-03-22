@@ -16,6 +16,7 @@ type Config struct {
 	Latitude     string   `json:"latitude"`
 	Longitude    string   `json:"longitude"`
 	Services     []string `json:"services"`
+	Battery      bool     `json:"battery"`
 }
 
 type geocodingAPI struct {
@@ -65,6 +66,7 @@ func makeConfig(path string) error {
 	var userZip string
 	var userCountryCode string
 	var confServices []string
+	var userBattery string
 	fmt.Println("> What is your 2 character ISO Country code? US for the United States of America.")
 	fmt.Scanln(&userCountryCode)
 	fmt.Println("> What is your current zipcode?")
@@ -89,12 +91,17 @@ func makeConfig(path string) error {
 	if err = json.Unmarshal(body, &geoCodingRes); err != nil {
 		return err
 	}
+	fmt.Println("> Do you have a device with a battery? y/N")
+	fmt.Scanln(&userBattery)
+	userBattLower := strings.ToLower(userBattery)
+	confBatt := userBattLower == "y" || userBattLower == "yes"
 
 	conf := Config{
 		LocationName: geoCodingRes.Results[0].Name,
 		Latitude:     fmt.Sprintf("%v", geoCodingRes.Results[0].Latitude),
 		Longitude:    fmt.Sprintf("%v", geoCodingRes.Results[0].Longitude),
 		Services:     confServices,
+		Battery:      confBatt,
 	}
 	confData, err := json.Marshal(conf)
 	if err != nil {
