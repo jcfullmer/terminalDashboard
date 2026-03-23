@@ -23,25 +23,24 @@ go build .
 
 ### Linux (GNOME, KDE, XFCE, etc.)
 
-      After creating the binaries it is recommended to move it to /bin 
-      Open Home folder in your terminal.
-      Open .bashrc in your text editor
-      Add:
+ After creating the binaries it is recommended to move it to /bin 
+ Open Home folder in your terminal.
+ Open .bashrc in your text editor
+ Add:
 
 ```
 terminalDashboard
 ```
-
-      to the end of the .bashrc
-      Save and exit
+to the end of the .bashrc
+Save and exit
 
 ### macOS: **Not Tested**
 
-        Open System Preferences > Users & Groups > Login Items.
-        Click the + button and add your script or application. You can also create a script and use the Automator to wrap it as an application to add it as a login item.
+Open System Preferences > Users & Groups > Login Items.
+Click the + button and add your script or application. You can also create a script and use the Automator to wrap it as an application to add it as a login item.
 
 ### Windows: **Not Tested**
 
-        Press the Windows Key + R, then type shell:startup and press Enter to open the current user's Startup folder.
-        Place a shortcut to your program or a batch file (.bat or .cmd) in this folder.
-        For a program to run with administrator privileges, use the Task Scheduler instead and set a trigger for user login. 
+Press the Windows Key + R, then type shell:startup and press Enter to open the current user's Startup folder.
+Place a shortcut to your program or a batch file (.bat or .cmd) in this folder.
+For a program to run with administrator privileges, use the Task Scheduler instead and set a trigger for user login. 
