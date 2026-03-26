@@ -28,7 +28,6 @@ func main() {
 		pterm.Error.Printf("Error getting weather: %v", err)
 	}
 
-	// spinner.Success()
 	spinner.UpdateText("Getting system Info")
 	serviceStatus, err := utilities.GetServices(conf)
 	if err != nil {
