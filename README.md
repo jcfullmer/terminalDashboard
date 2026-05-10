@@ -7,10 +7,10 @@ When running the program for the first time it will look for a config file and i
 
 - [Install Go](https://go.dev/doc/install)
 
-- Build the binaries:
+- Build and install the binaries:
 
 ```
-go build .
+go install .
 ```
 
 - *(Optional)* Run the program for the first time to go through setup:
@@ -23,7 +23,7 @@ go build .
 
 ### Linux (GNOME, KDE, XFCE, etc.)
 
- After creating the binaries it is recommended to move it to /bin 
+ After installing the binaries:
  Open Home folder in your terminal.
  Open .bashrc in your text editor
  Add:
@@ -31,6 +31,7 @@ go build .
 ```
 terminalDashboard
 ```
+
 to the end of the .bashrc
 Save and exit
 
