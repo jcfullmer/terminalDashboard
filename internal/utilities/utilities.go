@@ -121,7 +121,6 @@ func GetTop3HackerNewsStories() ([]string, error) {
 	}
 
 	first3 := ids[:3]
-	fmt.Println(first3)
 	for _, story := range first3 {
 		getStoryJSON := fmt.Sprintf("%s%d.json", storyURL, story)
 		storyRes, err := http.Get(getStoryJSON)
