@@ -11,6 +11,19 @@ import (
 	"github.com/jcfullmer/terminalDashboard/config"
 )
 
+type StoryInfo struct {
+	By          string `json:"by"`
+	Descendants int    `json:"descendants"`
+	ID          int    `json:"id"`
+	Kids        []int  `json:"kids"`
+	Score       int    `json:"score"`
+	Text        string `json:"text"`
+	Time        int    `json:"time"`
+	Title       string `json:"title"`
+	Type        string `json:"type"`
+	URL         string `json:"url"`
+}
+
 type WeatherRes struct {
 	CurrentUnits struct {
 		Temperature2M string `json:"temperature_2m"`
@@ -87,4 +100,45 @@ func GetBatteryPercent(conf *config.Config) (string, error) {
 		status += fmt.Sprintf("\nRate: %.0f mW", bat.ChargeRate)
 	}
 	return status, nil
+}
+
+func GetTop3HackerNewsStories() ([]string, error) {
+	bestStoryIDs := "https://hacker-news.firebaseio.com/v0/beststories.json"
+	storyURL := "https://hacker-news.firebaseio.com/v0/item/"
+	var result []string
+	res, err := http.Get(bestStoryIDs)
+	if err != nil {
+		return result, err
+	}
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return result, err
+	}
+
+	var ids []int
+	if err := json.Unmarshal(body, &ids); err != nil {
+		return result, err
+	}
+
+	first3 := ids[:3]
+	fmt.Println(first3)
+	for _, story := range first3 {
+		getStoryJSON := fmt.Sprintf("%s%d.json", storyURL, story)
+		storyRes, err := http.Get(getStoryJSON)
+		if err != nil {
+			return result, err
+		}
+		body, err := io.ReadAll(storyRes.Body)
+		if err != nil {
+			return result, err
+		}
+		var storyInf StoryInfo
+		if err := json.Unmarshal(body, &storyInf); err != nil {
+			return result, err
+		}
+		titleLink := fmt.Sprintf("%s\n    %s", storyInf.Title, storyInf.URL)
+		result = append(result, titleLink)
+
+	}
+	return result, nil
 }

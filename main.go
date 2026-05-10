@@ -34,6 +34,11 @@ func main() {
 		pterm.Error.Printf("Error getting serviceStatus: %v", err)
 	}
 
+	spinner.UpdateText("Getting best stories from HackerNews")
+	stories, err := utilities.GetTop3HackerNewsStories()
+	if err != nil {
+		pterm.Error.Printf("Error getting serviceStatus: %v", err)
+	}
 	// get current time
 	area, _ := pterm.DefaultArea.WithCenter().Start()
 	clock, _ := pterm.DefaultBigText.WithLetters(putils.LettersFromString(time.Now().Format("03:04PM"))).Srender()
@@ -58,4 +63,7 @@ func main() {
 	}
 
 	pterm.DefaultPanel.WithPanels([][]pterm.Panel{Panels}).Render()
+	for _, story := range stories {
+		pterm.Println(story)
+	}
 }
